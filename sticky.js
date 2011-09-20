@@ -11,22 +11,26 @@
 	
 	$.fn.sticky = function(note, options, callback) 
 		{
-		// Default settings
-		var position = 'top-right'; // top-left, top-right, bottom-left, or bottom-right
+		
 		
 		var settings =
 			{
 			'speed'			:	'fast',	 // animations: fast, slow, or integer
 			'duplicates'	:	true,  // true or false
-			'autoclose'		:	5000  // integer or false
+			'autoclose'		:	5000,// integer or false
+			'position'		: 'top-right'  // top-left, top-right, bottom-left, or bottom-right
 			};
+			
+		if(options)
+			{ $.extend(settings, options); }
+			
+		
 		
 		// Passing in the object instead of specifying a note
 		if(!note)
 			{ note = this.html(); }
 		
-		if(options)
-			{ $.extend(settings, options); }
+		
 		
 		// Variables
 		var display = true;
@@ -49,15 +53,15 @@
 			});
 		
 		// Make sure the sticky queue exists
-		if(!$('body').find('.sticky-queue').html())
-			{ $('body').append('<div class="sticky-queue ' + position + '"></div>'); }
+		if(!$('body').find('.sticky-queue.'+settings.position).html())
+			{ $('body').append('<div class="sticky-queue ' + settings.position + '"></div>'); }
 		
 		// Can it be displayed?
 		if(display)
 			{
 			// Building and inserting sticky note
-			$('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
-			$('#' + uniqID).append('<img src="close.png" class="sticky-close" rel="' + uniqID + '" title="Close" />');
+			$('.sticky-queue.'+settings.position).prepend('<div class="sticky border-' + settings.position + '" id="' + uniqID + '"></div>');
+			$('#' + uniqID).append('<img src="' + (settings.imagePath ? settings.imagePath : 'close.png' ) + '" class="sticky-close" rel="' + uniqID + '" title="Close" />');
 			$('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
 			
 			// Smoother animation
@@ -86,7 +90,7 @@
 			'id'		:	uniqID,
 			'duplicate'	:	duplicate,
 			'displayed'	: 	display,
-			'position'	:	position
+			'position'	:	settings.position
 			}
 		
 		// Callback function?
